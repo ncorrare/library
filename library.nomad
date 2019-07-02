@@ -22,19 +22,23 @@ job "library" {
       }
       driver = "docker"
       config {
-        image = "ncorrare/library:release-0.1.9"
+        image = "ncorrare/library:release-0.1.10"
         command = "ruby"
-        args = ["main.rb", "${NOMAD_PORT_http}"]
+        args = ["main.rb", "4567"]
+        port_map {
+          http = 4567
+        }
       }
       service {
 
         port = "http"
 
         check {
-          type     = "http"
-          path     = "/"
+          type     = "tcp"
+          path     = "/v1/books"
+          port     = "http"
           interval = "10s"
-          timeout  = "2s"
+          timeout  = "5s"
         }
       }
       resources {
