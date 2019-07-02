@@ -10,20 +10,16 @@ job "addbook" {
   group "batch" {
     count = 1
     task "createbook" {
-      artifact {
-        source      = "git::https://github.com/ncorrare/library.git"
-        options = {
-          depth = 1
-        }
-      }
+
       vault {
         policies = ["library"]
 
         change_mode   = "signal"
         change_signal = "SIGUSR1"
       }
-      driver = "exec"
+      driver = "docker"
       config {
+        image = "ncorrare/library:0.1.0"
         command = "ruby"
         args = ["addbook.rb", "${NOMAD_META_ISBN}"]
       }
