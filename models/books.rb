@@ -5,7 +5,6 @@ require './models/vault'
 class Books
 
   def initialize
-    print "initializing class Books"
     @vault = LocalVault.new
   end
 
@@ -54,14 +53,21 @@ class Books
           return [false, "Cannot connect to OpenLibrary API"]
         end
         if response != nil
+          print response
           key, data = JSON.parse(response).first
+          if data["authors"].nil?
+            authors = 'Unknown'
+          else
+            authors = data["authors"][0]["name"].to_s
+          end
+
           book = {
             "title" => @vault.encrypt(data["title"].to_s, 'library', 'morbury'),
             "thumbnail_url" => @vault.encrypt(data["cover"]["large"].to_s, 'library', 'morbury'),
             "subtitle" => @vault.encrypt(data["subtitle"].to_s, 'library', 'morbury'),
             "url" => @vault.encrypt(data["url"].to_s, 'library', 'morbury'),
             "publish_date" => @vault.encrypt(data["publish_date"].to_s, 'library', 'morbury'),
-            "author" => @vault.encrypt(data["authors"][0]["name"].to_s, 'library', 'morbury'),
+            "author" => @vault.encrypt(authors, 'library', 'morbury'),
             "publishers" => @vault.encrypt(data["publishers"][0]["name"].to_s, 'library', 'morbury'),
           }
           if Diplomat::Kv.put("library/#{isbn}", book.to_json, { http_addr: "http://127.0.0.1:8500", dc: "stn", token: @vault.getConsulToken})
