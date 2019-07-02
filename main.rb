@@ -6,6 +6,7 @@ require './models/vault'
 
 @@vault = LocalVault.new
 @@books = Books.new
+set :bind, '0.0.0.0'
 get '/' do
   booklist = @@books.all
   bookshelf = []
