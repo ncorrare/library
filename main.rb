@@ -31,18 +31,42 @@ end
 post '/v1/books/:isbn' do
   content_type :json
   key = params['key']
-  if key = @@vault.getAPIKey
-    content = JSON.parse(params[:content])
-    unless @@books.by_isbn(content[:isbn])
-      output = @@books.Create(content[:isbn], content[:title], content[:subtitle], content[:published], content[:authors], content[:cover])
-      status = output[0]
-      response = output[1].to_json
-      if status != true
-        halt 500, response
+  if key == @@vault.getAPIKey
+    payload = {
+      :Meta => {
+        :ISBN => params['isbn']
+      }
+    }.to_json
+    if @@books.by_isbn(params['isbn'])[0].to_s == 'false'
+      dispatchkey = @@vault.getNomadDispatchToken
+      logger.info dispatchkey
+      #begin
+        logger.info 'define uri'
+        uri = URI.parse("https://nomad.stn.corrarello.net/v1/job/addbook/dispatch")
+        logger.info 'define header'
+        header = {'X-Nomad-Token': dispatchkey}
+        logger.info 'define request'
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+        request = Net::HTTP::Post.new(uri.request_uri, header)
+        logger.info payload
+        request.body = payload
+        response = http.request(request)
+      #rescue
+      #  return [false, "Cannot connect to Nomad"].to_json
+      #end
+      if response.code == 200
+        jobstatus = JSON.parse(response.body)
+        readkey = @@vault.getConsulReadToken
+        response = [true, readkey].to_json
+        response
+      else
+        halt 500, response.body
       end
+
     else
-      halt 500, "Book already exists"
+      halt 500, "Book already exists".to_json
     end
-  else halt 401, "Unauthorized"
+  else halt 401, "Unauthorized".to_json
 end
 end

@@ -15,8 +15,13 @@ class LocalVault
     return credentials.data[:token]
   end
 
-  def getNomadToken
-    credentials = @vault.logical.read("nomad/creds/library")
+  def getNomadDispatchToken
+    credentials = @vault.logical.read("nomad/creds/dispatch")
+    return credentials.data[:secret_id]
+  end
+
+  def getConsulReadToken
+    credentials = @vault.logical.read("consul/creds/libraryread")
     return credentials.data[:token]
   end
 
