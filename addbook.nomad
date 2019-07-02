@@ -10,7 +10,9 @@ job "addbook" {
   group "batch" {
     count = 1
     task "createbook" {
-
+      env {
+        CONSUL_HTTP_ADDR = "http://${attr.unique.network.ip-address}:8500"
+      }
       vault {
         policies = ["library"]
 
@@ -19,7 +21,7 @@ job "addbook" {
       }
       driver = "docker"
       config {
-        image = "ncorrare/library:release-0.1.5"
+        image = "ncorrare/library:release-0.1.6"
         command = "ruby"
         args = ["addbook.rb", "${NOMAD_META_ISBN}"]
       }

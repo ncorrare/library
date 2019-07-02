@@ -10,7 +10,7 @@ class Books
 
   def by_isbn(isbn)
     #book = @consul.kv.get("/library/#{isbn}")
-    encdata = Diplomat::Kv.get("library/#{isbn}",{ http_addr: "http://127.0.0.1:8500", dc: "stn", token: @vault.getConsulToken},  not_found = :return, found = :return)
+    encdata = Diplomat::Kv.get("library/#{isbn}",{ http_addr: ENV['CONSUL_HTTP_ADDR'], dc: "stn", token: @vault.getConsulToken},  not_found = :return, found = :return)
     if (encdata != nil and encdata != "")
       data = JSON.parse(encdata)
       if data["title"].include? 'vault'
@@ -33,7 +33,7 @@ class Books
   end
 
   def all()
-    keys = Diplomat::Kv.get("library/", { keys: true, http_addr: "http://127.0.0.1:8500", dc: "stn", token: @vault.getConsulToken})
+    keys = Diplomat::Kv.get("library/", { keys: true, http_addr: ENV['CONSUL_HTTP_ADDR'], dc: "stn", token: @vault.getConsulToken})
     if keys != nil
       books = []
       keys.drop(1).each { |path| books.push(path.partition('/').last) }
@@ -70,7 +70,7 @@ class Books
             "author" => @vault.encrypt(authors, 'library', 'morbury'),
             "publishers" => @vault.encrypt(data["publishers"][0]["name"].to_s, 'library', 'morbury'),
           }
-          if Diplomat::Kv.put("library/#{isbn}", book.to_json, { http_addr: "http://127.0.0.1:8500", dc: "stn", token: @vault.getConsulToken})
+          if Diplomat::Kv.put("library/#{isbn}", book.to_json, { http_addr: ENV['CONSUL_HTTP_ADDR'], dc: "stn", token: @vault.getConsulToken})
             return [true, isbn]
           else
             return [false, "Error storing book with ISBN #{isbn}"]
