@@ -22,9 +22,9 @@ job "library" {
       }
       driver = "docker"
       config {
-        image = "ncorrare/library:release-0.1.8"
+        image = "ncorrare/library:release-0.1.9"
         command = "ruby"
-        args = ["main.rb"]
+        args = ["main.rb", "${NOMAD_PORT_http}"]
       }
       service {
 
@@ -32,7 +32,7 @@ job "library" {
 
         check {
           type     = "http"
-          path     = "/health"
+          path     = "/"
           interval = "10s"
           timeout  = "2s"
         }
