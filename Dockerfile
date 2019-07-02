@@ -1,4 +1,4 @@
-FROM ruby:2.4-slim
+FROM arm32v7/ruby:2.4-slim
 RUN apt-get update -qq && apt-get install -y build-essential apt-utils
 
 ENV APP_ROOT /app/jamo
