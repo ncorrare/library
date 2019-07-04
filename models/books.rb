@@ -55,12 +55,15 @@ class Books
         if response != nil
           print response
           key, data = JSON.parse(response).first
-          if data["authors"].nil?
-            authors = 'Unknown'
+          unless data.nil?
+            if data["authors"].nil?
+              authors = 'Unknown'
+            else
+              authors = data["authors"][0]["name"].to_s
+            end
           else
-            authors = data["authors"][0]["name"].to_s
+            authors = 'Unknown'
           end
-
           book = {
             "title" => @vault.encrypt(data["title"].to_s, 'library', 'morbury'),
             "thumbnail_url" => @vault.encrypt(data["cover"]["large"].to_s, 'library', 'morbury'),
