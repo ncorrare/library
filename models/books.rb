@@ -62,9 +62,9 @@ class Books
               authors = data["authors"][0]["name"].to_s
             end
             if data["identifiers"]["isbn_10"][0].nil?
-              isbnadd = ["identifiers"]["isbn_13"][0]
+              isbnadd = data["identifiers"]["isbn_13"][0]
             else
-              isbnadd = ["identifiers"]["isbn_10"][0]
+              isbnadd = data["identifiers"]["isbn_10"][0]
             end
             book = {
               "isbn" => isbnadd,
