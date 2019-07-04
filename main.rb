@@ -59,8 +59,8 @@ post '/v1/books/:isbn' do
       if response.code == 200
         jobstatus = JSON.parse(response.body)
         readkey = @@vault.getConsulReadToken
-        response = [true, readkey].to_json
-        response
+        output = [true, readkey, jobstatus].to_json
+        output
       else
         halt 500, response.body
       end

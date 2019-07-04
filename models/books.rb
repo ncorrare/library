@@ -53,7 +53,6 @@ class Books
           return [false, "Cannot connect to OpenLibrary API"]
         end
         if response != nil
-          print response
           key, data = JSON.parse(response).first
           unless data.nil?
             if data["authors"].nil?
@@ -61,22 +60,22 @@ class Books
             else
               authors = data["authors"][0]["name"].to_s
             end
+            book = {
+              "title" => @vault.encrypt(data["title"].to_s, 'library', 'morbury'),
+              "thumbnail_url" => @vault.encrypt(data["cover"]["large"].to_s, 'library', 'morbury'),
+              "subtitle" => @vault.encrypt(data["subtitle"].to_s, 'library', 'morbury'),
+              "url" => @vault.encrypt(data["url"].to_s, 'library', 'morbury'),
+              "publish_date" => @vault.encrypt(data["publish_date"].to_s, 'library', 'morbury'),
+              "author" => @vault.encrypt(authors, 'library', 'morbury'),
+              "publishers" => @vault.encrypt(data["publishers"][0]["name"].to_s, 'library', 'morbury'),
+            }
+            if Diplomat::Kv.put("library/#{isbn}", book.to_json, { http_addr: ENV['CONSUL_HTTP_ADDR'], dc: "stn", token: @vault.getConsulToken})
+              return [true, isbn]
+            else
+              return [false, "Error storing book with ISBN #{isbn}"]
+            end
           else
-            authors = 'Unknown'
-          end
-          book = {
-            "title" => @vault.encrypt(data["title"].to_s, 'library', 'morbury'),
-            "thumbnail_url" => @vault.encrypt(data["cover"]["large"].to_s, 'library', 'morbury'),
-            "subtitle" => @vault.encrypt(data["subtitle"].to_s, 'library', 'morbury'),
-            "url" => @vault.encrypt(data["url"].to_s, 'library', 'morbury'),
-            "publish_date" => @vault.encrypt(data["publish_date"].to_s, 'library', 'morbury'),
-            "author" => @vault.encrypt(authors, 'library', 'morbury'),
-            "publishers" => @vault.encrypt(data["publishers"][0]["name"].to_s, 'library', 'morbury'),
-          }
-          if Diplomat::Kv.put("library/#{isbn}", book.to_json, { http_addr: ENV['CONSUL_HTTP_ADDR'], dc: "stn", token: @vault.getConsulToken})
-            return [true, isbn]
-          else
-            return [false, "Error storing book with ISBN #{isbn}"]
+            return [false, "Book not found in the OpenLibrary API"]
           end
         else
           return [false, "Book not found in the OpenLibrary API"]
