@@ -15,6 +15,7 @@ class Books
       data = JSON.parse(encdata)
       if data["title"].include? 'vault'
         book = {
+          "isbn" => data["isbn"],
           "title" => @vault.decrypt(data["title"].to_s, 'library', 'morbury'),
           "thumbnail_url" => @vault.decrypt(data["thumbnail_url"].to_s, 'library', 'morbury'),
           "subtitle" => @vault.decrypt(data["subtitle"].to_s, 'library', 'morbury'),
@@ -61,6 +62,7 @@ class Books
               authors = data["authors"][0]["name"].to_s
             end
             book = {
+              "isbn" => data["identifiers"]["isbn_10"][0],
               "title" => @vault.encrypt(data["title"].to_s, 'library', 'morbury'),
               "thumbnail_url" => @vault.encrypt(data["cover"]["large"].to_s, 'library', 'morbury'),
               "subtitle" => @vault.encrypt(data["subtitle"].to_s, 'library', 'morbury'),
