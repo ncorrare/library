@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Books available in Nico's House</title>
+<script
+  type="text/javascript"
+  src="//cdnjs.cloudflare.com/ajax/libs/mootools/1.4.5/mootools-core-full-nocompat.js"></script>
 <style>
       html {
   box-sizing: border-box;
@@ -54,17 +57,99 @@ body {
   max-width: 100%;
 }
 
+.modalDialog {
+        position: fixed;
+        font-family: Arial, Helvetica, sans-serif;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(0,0,0,0.8);
+        z-index: 99999;
+        opacity:0;
+        -webkit-transition: opacity 400ms ease-in;
+        -moz-transition: opacity 400ms ease-in;
+        transition: opacity 400ms ease-in;
+        pointer-events: none;
+    }
+
+    .modalDialog:target {
+        opacity:1;
+        pointer-events: auto;
+    }
+
+    .modalDialog > div {
+        width: 400px;
+        position: relative;
+        margin: 10% auto;
+        padding: 5px 20px 13px 20px;
+        border-radius: 10px;
+        background: #fff;
+        background: -moz-linear-gradient(#fff, #999);
+        background: -webkit-linear-gradient(#fff, #999);
+        background: -o-linear-gradient(#fff, #999);
+    }
+
+    .close {
+        background: #606061;
+        color: #FFFFFF;
+        line-height: 25px;
+        position: absolute;
+        right: -12px;
+        text-align: center;
+        top: -10px;
+        width: 24px;
+        text-decoration: none;
+        font-weight: bold;
+        -webkit-border-radius: 12px;
+        -moz-border-radius: 12px;
+        border-radius: 12px;
+        -moz-box-shadow: 1px 1px 3px #000;
+        -webkit-box-shadow: 1px 1px 3px #000;
+        box-shadow: 1px 1px 3px #000;
+    }
+
+    .close:hover { background: #00d9ff; }
+
     </style>
+    <script type="text/javascript">
+//<![CDATA[
+
+  window.addEvent('load', function() {
+
+
+
+  });
+
+//]]></script>
 </head>
 <body translate="no">
 <div class="bookshelf--frame">
 <% unless content.nil? %>
 <% content.each do |book| %>
 <div class="book-wrapper">
-<img src="<%= book["thumbnail_url"] %>" width="300" height="500" alt="<%= book["title"] %>">
+<a href="#openModal<%= book["isbn"] %>">
+<img src="<%= book["thumbnail_url"] %>" width="300" height="500" alt="<%= book["title"] %>"></a>
+
 </div>
+
 <% end %>
 <% end %>
 </div>
+<% unless content.nil? %>
+<% content.each do |book| %>
+<div id="openModal<%= book["isbn"] %>" class="modalDialog">
+<div>
+    <a href="#close" title="Close" class="close">X</a>
+    <h2><%= book["title"] %></h2>
+    <h3><%= book["subtitle"] %></h3>
+    <p><bold>Published Date:</bold> <%= book["publish_date"] %></p>
+    <p><bold>Author:</bold> <%= book["author"] %></p>
+    <p><bold>Publisher:</bold> <%= book["publishers"] %></p>
+    <p><a href="<%= book["url"] %>" target="_blank">More info</a></p>
+</div>
+</div>
+<% end %>
+<% end %>
 </body>
 </html>
