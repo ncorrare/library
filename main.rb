@@ -41,25 +41,26 @@ post '/v1/books/:isbn' do
     }.to_json
     if @@books.by_isbn(params['isbn'])[0].to_s == 'false'
       dispatchkey = @@vault.getNomadDispatchToken
-      logger.info dispatchkey
       #begin
-        logger.info 'define uri'
         uri = URI.parse("http://192.168.50.16:4646/v1/job/addbook/dispatch")
-        logger.info 'define header'
         header = {'X-Nomad-Token': dispatchkey}
-        logger.info 'define request'
+        logger.info "Making request to Nomad to add Book #{params['isbn']}"
         http = Net::HTTP.new(uri.host, uri.port)
         request = Net::HTTP::Post.new(uri.request_uri, header)
         logger.info payload
         request.body = payload
         response = http.request(request)
+        success = response.code
+        logger.info "Nomad's response is #{success}"
       #rescue
       #  return [false, "Cannot connect to Nomad"].to_json
       #end
-      if response.code == 200
+      if success.to_s == '200'
         jobstatus = JSON.parse(response.body)
         readkey = @@vault.getConsulReadToken
+        logger.info "Job to add isbn #{params['isbn']} dispatched succesfully"
         output = [true, readkey, jobstatus].to_json
+        status 200
         output
       else
         halt 500, response.body

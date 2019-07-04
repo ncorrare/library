@@ -21,7 +21,7 @@ class LocalVault
   end
 
   def getConsulReadToken
-    credentials = @vault.logical.read("consul/creds/libraryread")
+    credentials = @vault.logical.read("consul/creds/library-read")
     return credentials.data[:token]
   end
 
