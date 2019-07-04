@@ -44,7 +44,7 @@ post '/v1/books/:isbn' do
       logger.info dispatchkey
       #begin
         logger.info 'define uri'
-        uri = URI.parse("https://nomad.stn.corrarello.net/v1/job/addbook/dispatch")
+        uri = URI.parse("http://#{ENV['NOMAD_ADDR']}:4646/v1/job/addbook/dispatch")
         logger.info 'define header'
         header = {'X-Nomad-Token': dispatchkey}
         logger.info 'define request'

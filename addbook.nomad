@@ -12,6 +12,7 @@ job "addbook" {
     task "createbook" {
       env {
         CONSUL_HTTP_ADDR = "http://${attr.unique.network.ip-address}:8500"
+        NOMAD_ADDR = "http://${attr.unique.network.ip-address}:8500"
         VAULT_ADDR = "https://vault.stn.corrarello.net"
         VAULT_SKIP_VERIFY = "true"
       }
@@ -23,7 +24,7 @@ job "addbook" {
       }
       driver = "docker"
       config {
-        image = "ncorrare/library:release-0.1.10"
+        image = "ncorrare/library:release-0.1.11"
         command = "ruby"
         args = ["addbook.rb", "${NOMAD_META_ISBN}"]
       }
