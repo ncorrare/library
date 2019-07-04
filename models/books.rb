@@ -61,8 +61,13 @@ class Books
             else
               authors = data["authors"][0]["name"].to_s
             end
+            if data["identifiers"]["isbn_10"][0].nil?
+              isbnadd = ["identifiers"]["isbn_13"][0]
+            else
+              isbnadd = ["identifiers"]["isbn_10"][0]
+            end
             book = {
-              "isbn" => data["identifiers"]["isbn_10"][0],
+              "isbn" => isbnadd,
               "title" => @vault.encrypt(data["title"].to_s, 'library', 'morbury'),
               "thumbnail_url" => @vault.encrypt(data["cover"]["large"].to_s, 'library', 'morbury'),
               "subtitle" => @vault.encrypt(data["subtitle"].to_s, 'library', 'morbury'),
