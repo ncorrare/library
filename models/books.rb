@@ -61,16 +61,32 @@ class Books
             else
               authors = data["authors"][0]["name"].to_s
             end
-            if data["identifiers"]["isbn_10"][0].nil?
-              isbnadd = data["identifiers"]["isbn_13"][0]
-            else
+            if data["identifiers"].key? 'isbn_10'
               isbnadd = data["identifiers"]["isbn_10"][0]
+            else
+              isbnadd = data["identifiers"]["isbn_13"][0]
+            end
+            if data.key? 'cover'
+              if data["cover"].key? 'large'
+                image = data["cover"]["large"].to_s
+              else
+                if data["cover"].key? 'small'
+                  image = data["cover"]["small"].to_s
+                else
+                  image = "http://104.130.11.24/images/noimage.jpg"
+                end
+              end
+            end
+            if data.key? 'subtitle'
+              subtitle = data["subtitle"].to_s
+            else
+              subtitle = '-'
             end
             book = {
               "isbn" => isbnadd,
               "title" => @vault.encrypt(data["title"].to_s, 'library', 'morbury'),
-              "thumbnail_url" => @vault.encrypt(data["cover"]["large"].to_s, 'library', 'morbury'),
-              "subtitle" => @vault.encrypt(data["subtitle"].to_s, 'library', 'morbury'),
+              "thumbnail_url" => @vault.encrypt(image, 'library', 'morbury'),
+              "subtitle" => @vault.encrypt(subtitle, 'library', 'morbury'),
               "url" => @vault.encrypt(data["url"].to_s, 'library', 'morbury'),
               "publish_date" => @vault.encrypt(data["publish_date"].to_s, 'library', 'morbury'),
               "author" => @vault.encrypt(authors, 'library', 'morbury'),
