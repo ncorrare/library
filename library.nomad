@@ -13,6 +13,7 @@ job "library" {
         CONSUL_HTTP_ADDR = "http://${attr.unique.network.ip-address}:8500"
         VAULT_ADDR = "https://vault.stn.corrarello.net"
         VAULT_SKIP_VERIFY = "true"
+        NOMAD_ADDR = "http://${attr.unique.network.ip-address}:8500"
       }
       vault {
         policies = ["library"]

@@ -49,7 +49,6 @@ post '/v1/books/:isbn' do
         header = {'X-Nomad-Token': dispatchkey}
         logger.info 'define request'
         http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
         request = Net::HTTP::Post.new(uri.request_uri, header)
         logger.info payload
         request.body = payload
