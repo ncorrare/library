@@ -6,6 +6,6 @@ action = book.create "#{ARGV[0]}".to_s
 if action[0] == true
   exit(0)
 else
+  print action[1]
   exit(1)
 end
-
