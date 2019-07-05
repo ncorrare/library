@@ -222,8 +222,9 @@ function addBook(){
     <p><bold>Publisher:</bold> <%= book["publishers"] %></p>
     <p><a href="<%= book["url"] %>" target="_blank">More info</a></p>
     <form name="delete<%= book["isbn"] %>" method="delete" action="/v1/books/<%= book["isbn"] %>">
+      <p><bold>API Key:</bold> <input type="password" name="key" size=20></input></p>
       <input type='hidden' name='isbn' value='<%= book["isbn"] %>' /> <input type='submit' name='Delete' value='Delete' />
-      </form>
+    </form>
 </div>
 </div>
 <% end %>
