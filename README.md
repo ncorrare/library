@@ -1,4 +1,4 @@
-#library
+# library #
 ![Docker build status](https://img.shields.io/docker/cloud/build/ncorrare/library.svg)
 A book tracking application, designed to run in Nomad, using asynchronous procedures via dispatch jobs.
 
