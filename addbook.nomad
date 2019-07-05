@@ -24,7 +24,7 @@ job "addbook" {
       }
       driver = "docker"
       config {
-        image = "ncorrare/library:release-0.1.21"
+        image = "ncorrare/library:release-0.2.0"
         command = "ruby"
         args = ["addbook.rb", "${NOMAD_META_ISBN}"]
       }

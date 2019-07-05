@@ -104,12 +104,27 @@ class Books
           return [false, "Book not found in the OpenLibrary API"]
         end
       else
-        return [false, "ISBN already exists"]
+        return [false, "ISBN already exist"]
       end
     else
       return [false, "ISBN cannot be empty"]
     end
   end
 
+def delete(isbn)
+  unless isbn.nil?
+    if self.by_isbn(isbn)[0] == true
+      if Diplomat::Kv.delete("library/#{isbn}", { http_addr: ENV['CONSUL_HTTP_ADDR'], dc: "stn", token: @vault.getConsulToken})
+        return [true, isbn]
+      else
+        return [false, "Error deleting book with ISBN #{isbn}"]
+      end
+    else
+      return [false, "ISBN does not exist"]
+    end
+  else
+    return [false, "ISBN cannot be empty"]
+  end
+end
 
 end

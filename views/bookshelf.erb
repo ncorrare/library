@@ -131,7 +131,7 @@ body {
   document.getElementById(hide).style.display= 'none' ;
 
 }
-
+var checkWithConsul
 var finished = false
 function checkBook(isbn,token){
   var cxhr = new XMLHttpRequest();
@@ -146,8 +146,9 @@ function checkBook(isbn,token){
     if (this.readyState == 4) {
       status = this.status;
       if (status == 200) {
+        clearInterval(checkWithConsul)
         console.log(cxhr.responseText)
-        location.reload();
+        location.replace('/#openModal'+isbn);
         return false;
       }
       else
@@ -177,7 +178,7 @@ function addBook(){
         var token = data[1]
         switchvisible('wait','addform');
         console.log('Checking if book ' + newisbn + 'is on consul yet');
-        var checkWithConsul = setInterval(function() {checkBook(newisbn,token)}, 6000);
+        checkWithConsul = setInterval(function() {checkBook(newisbn,token)}, 10000);
         console.log('Waiting for book to be created. Sleeping 2 seconds');
 
       }
@@ -215,11 +216,14 @@ function addBook(){
 <div>
     <a href="#close" title="Close" class="close">X</a>
     <h2><%= book["title"] %></h2>
-    <h3><%= book["subtitle"] %></h3>
+    <h3><%= book["subtitle"] %> (ISBN <%= book["isbn"] %>)</h3>
     <p><bold>Published Date:</bold> <%= book["publish_date"] %></p>
     <p><bold>Author:</bold> <%= book["author"] %></p>
     <p><bold>Publisher:</bold> <%= book["publishers"] %></p>
     <p><a href="<%= book["url"] %>" target="_blank">More info</a></p>
+    <form name="delete<%= book["isbn"] %>" method="delete" action="/v1/books/<%= book["isbn"] %>">
+      <input type='hidden' name='isbn' value='<%= book["isbn"] %>' /> <input type='submit' name='Delete' value='Delete' />
+      </form>
 </div>
 </div>
 <% end %>

@@ -30,6 +30,24 @@ get '/v1/books' do
   end
 end
 
+delete '/v1/books/:isbn' do
+  content_type :json
+  key = params['key']
+  if key == @@vault.getAPIKey
+    if @@books.by_isbn(params['isbn'])[0].to_s == 'true'
+      if (@@books.delete(params['isbn'])[0].to_s == 'true')
+        output = [true, "Book #{params['isbn']} deleted"].to_json
+        redirect '/'
+      else
+        halt 500, "Could not delete book #{params['isbn']}"
+      end
+    else
+      halt 500, "Book does not exists".to_json
+    end
+  else halt 401, "Unauthorized".to_json
+end
+
+end
 post '/v1/books/:isbn' do
   content_type :json
   key = params['key']
