@@ -6,4 +6,4 @@ A book tracking application, designed to run in Nomad, using asynchronous proced
 
 More documentation to be added later, there is a lot of stuff hardcoded still that shouldn't be there.
 
-See version 0.2.2 running live on [https://hashiconfeu.hashicorp.com/](HashiConf EU)
+See version 0.2.2 running live on [HashiConf EU 2019](https://hashiconfeu.hashicorp.com/)
