@@ -37,7 +37,8 @@ delete '/v1/books/:isbn' do
     if @@books.by_isbn(params['isbn'])[0].to_s == 'true'
       if (@@books.delete(params['isbn'])[0].to_s == 'true')
         output = [true, "Book #{params['isbn']} deleted"].to_json
-        redirect '/'
+        status 200
+        output
       else
         halt 500, "Could not delete book #{params['isbn']}"
       end

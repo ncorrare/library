@@ -148,7 +148,8 @@ function checkBook(isbn,token){
       if (status == 200) {
         clearInterval(checkWithConsul)
         console.log(cxhr.responseText)
-        location.replace('/#openModal'+isbn);
+        location.replace('/#openModal' + isbn);
+        location.reload();
         return false;
       }
       else
@@ -165,7 +166,7 @@ function addBook(){
   var formData = new FormData(form);
   var xhr = new XMLHttpRequest();
   var newisbn = document.getElementById("newBookISBN").value
-  var requestPath = 'v1/books/' + newisbn
+  var requestPath = 'v1/books/' + newisbn;
   xhr.open('POST', requestPath, true);
   xhr.send(formData);
   xhr.onreadystatechange = function() {
@@ -187,8 +188,43 @@ function addBook(){
       console.log('Error' + xhr.status + 'Submitting' + newisbn);
     }
   };
-
 }
+
+  function deleteBook(delisbn){
+    var formname = "delete" + delisbn
+    console.log('Called from ' + formname);
+    var form = document.getElementById(formname)
+    var formData = new FormData(form);
+    var xhr = new XMLHttpRequest();
+    var url = 'v1/books/' + delisbn;
+    xhr.open('DELETE', url, true);
+    xhr.send(formData)
+    xhr.onreadystatechange = function() {
+      var status;
+      var data;
+      if (xhr.readyState == 4) {
+        status = xhr.status;
+        if (status == 200) {
+          data = JSON.parse(xhr.responseText);
+          console.log(data[1]);
+          if (data[0] == true) {
+            location.replace('/');
+          }
+          else
+          {
+            alert('data[1]');
+        };
+      }
+      else {
+        console.log('working...');
+      };
+    }
+    else {
+      console.log('working...');
+    };
+  };
+  }
+
 
 </script>
 </head>
@@ -221,9 +257,9 @@ function addBook(){
     <p><bold>Author:</bold> <%= book["author"] %></p>
     <p><bold>Publisher:</bold> <%= book["publishers"] %></p>
     <p><a href="<%= book["url"] %>" target="_blank">More info</a></p>
-    <form name="delete<%= book["isbn"] %>" method="delete" action="/v1/books/<%= book["isbn"] %>">
+    <form name="delete<%= book["isbn"] %>" id="delete<%= book["isbn"] %>" action="#">
       <p><bold>API Key:</bold> <input type="password" name="key" size=20></input></p>
-      <input type='hidden' name='isbn' value='<%= book["isbn"] %>' /> <input type='submit' name='Delete' value='Delete' />
+     <input type='button' onClick="deleteBook('<%= book["isbn"] %>')" name='Delete' value='Delete' />
     </form>
 </div>
 </div>

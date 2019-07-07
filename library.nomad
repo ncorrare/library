@@ -23,7 +23,7 @@ job "library" {
       }
       driver = "docker"
       config {
-        image = "ncorrare/library:release-0.2.0"
+        image = "ncorrare/library:release-0.2.2"
         command = "ruby"
         args = ["main.rb", "4567"]
         port_map {
