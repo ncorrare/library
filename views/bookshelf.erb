@@ -251,16 +251,35 @@ function addBook(){
 <div id="openModal<%= book["isbn"] %>" class="modalDialog">
 <div>
     <a href="#close" title="Close" class="close">X</a>
-    <h2><%= book["title"] %></h2>
-    <h3><%= book["subtitle"] %> (ISBN <%= book["isbn"] %>)</h3>
-    <p><bold>Published Date:</bold> <%= book["publish_date"] %></p>
-    <p><bold>Author:</bold> <%= book["author"] %></p>
-    <p><bold>Publisher:</bold> <%= book["publishers"] %></p>
+    <table border="0">
+    <tr>
+    <th rowspan="5"><img src="<%= book["thumbnail_url"] %>" width="150" height="250" alt="<%= book["title"] %>"></td>
+    <th><h2><%= book["title"] %></h2>
+    <h3><%= book["subtitle"] %> (ISBN <%= book["isbn"] %>)</h3></th>
+    </tr>
+    <tr>
+    <td><p><bold>Published Date:</bold> <%= book["publish_date"] %></p></td>
+    </tr>
+    <tr>
+    <td><p><bold>Author:</bold> <%= book["author"] %></p></td>
+    </tr>
+    <tr>
+      <td><p><bold>Publisher:</bold> <%= book["publishers"] %></p></td>
+      </tr>
+      <tr>
+        <td>
     <p><a href="<%= book["url"] %>" target="_blank">More info</a></p>
+    </td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: center;">
     <form name="delete<%= book["isbn"] %>" id="delete<%= book["isbn"] %>" action="#">
-      <p><bold>API Key:</bold> <input type="password" name="key" size=20></input></p>
-     <input type='button' onClick="deleteBook('<%= book["isbn"] %>')" name='Delete' value='Delete' />
+      <p><bold>API Key:</bold> <input type="password" name="key" size=20></input>
+     <input type='button' onClick="deleteBook('<%= book["isbn"] %>')" name='Delete' value='Delete' /></p>
     </form>
+    </td>
+    </tr>
+    </table>
 </div>
 </div>
 <% end %>
